@@ -3,10 +3,11 @@ Title:       Portfolio Project
 Author:      Minh Nguyen
 Created:     2025-07-06
 Description:
-
-User Input:
-
-Program Output:
+    This Python program simulates a student course registration system that supports user authentication, course management, and student enrollment functionalities.
+    It features a secure login system with predefined credentials for administrators and students.
+    Administrators can manage courses by adding, removing, updating course details, and searching courses by title or ID.
+    Students can browse available courses, register for courses within capacity limits, drop courses, and view their registered courses. The system enforces course capacity restrictions to prevent over-registration.
+    Additionally, the program generates reports on courses registered by each student and enables administrators to view student lists for specific courses and courses registered by individual students. The interactive menu-driven interface provides distinct options for admins and students to efficiently manage and navigate the system.
 
 """
 
