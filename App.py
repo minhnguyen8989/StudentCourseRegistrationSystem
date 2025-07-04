@@ -11,8 +11,8 @@ Description:
 
 """
 
-
 from typing import List, Dict
+
 
 class User:
 
@@ -174,15 +174,27 @@ class Course:
         if student_id in self.registered_students:
             self.registered_students.remove(student_id)
 
-    def __str__(self):
+    @staticmethod
+    def get_table_header() -> str:
+        return "{:<10} {:<30} {:<8} {:<10} {:<12} {:<40}".format(
+            "Course ID", "Title", "Credits", "Capacity", "Registered", "Description"
+        )
+
+    def __str__(self) -> str:
         """
-        Shows course information as a string.
+        Shows all courses information.
 
         Returns:
             str: A summary including course ID, title, credits, capacity, and how many students are registered.
         """
-        return (f"ID: {self.course_id}, Title: {self.title}, Credits: {self.credits}, "
-                f"Capacity: {self.capacity}, Registered: {len(self.registered_students)}")
+        return "{:<10} {:<30} {:<8} {:<10} {:<12} {:<40}".format(
+            self.course_id,
+            self.title,
+            self.credits,
+            self.capacity,
+            len(self.registered_students),
+            self.description
+        )
 
 
 class RegistrationSystem:
@@ -234,7 +246,7 @@ class RegistrationSystem:
                 return student
         raise Exception("Invalid username or password.")
 
-    # --- Admin Functions ---
+    # Admins/Menu Management Functions
 
     def add_course(self, course_id: str, title: str, description: str, credits: int, capacity: int):
         """
@@ -350,9 +362,20 @@ class RegistrationSystem:
             raise Exception("Student not found.")
         return self.students[student_id].view_registered_courses()
 
-    # --- Students Functions ---
+    # Students/Menu Management Functions
 
-    def register_student_for_course(self, student_id: str, course_id: str):
+    def view_available_courses(self) -> List[Course]:
+        """
+        Shows all courses in the system.
+
+        This returns every course
+
+        Returns:
+            List[Course]: A list of all courses.
+        """
+        return list(self.courses.values())
+
+    def student_course_register(self, student_id: str, course_id: str):
         """
         Signs a student up for a course.
 
@@ -383,9 +406,9 @@ class RegistrationSystem:
         course.add_student(student_id)
         student.register_course(course_id)
 
-    def drop_student_from_course(self, student_id: str, course_id: str):
+    def student_course_remove(self, student_id: str, course_id: str):
         """
-        Removes a student from a course.
+        Removes a course from student's registered courses.
 
         Checks that the student and course exist, and that the student is registered.
         Updates both the course and student records.
@@ -411,20 +434,9 @@ class RegistrationSystem:
         course.remove_student(student_id)
         student.drop_course(course_id)
 
-    def view_available_courses(self) -> List[Course]:
+    def student_registered_course(self, student_id: str) -> str:
         """
-        Shows all courses in the system.
-
-        This returns every course
-
-        Returns:
-            List[Course]: A list of all courses.
-        """
-        return list(self.courses.values())
-
-    def generate_report_student_courses(self, student_id: str) -> str:
-        """
-        Creates a report showing all courses a student is signed up for.
+        Showing all courses a student is signed up for.
 
         Arguments:
             student_id (str): The student's ID.
@@ -450,7 +462,7 @@ class RegistrationSystem:
         return "\n".join(report_lines)
 
 
-def input_int(prompt: str, min_val=None, max_val=None) -> int:
+def valid_input_int(prompt: str, min_val=None, max_val=None) -> int:
     """
     Ask the user to enter a whole number.
 
@@ -475,7 +487,8 @@ def input_int(prompt: str, min_val=None, max_val=None) -> int:
         except ValueError:
             print("Invalid input. Please enter a valid number.")
 
-def input_nonempty(prompt: str) -> str:
+
+def valid_input_nonempty(prompt: str) -> str:
     """
     Asks the user to type something that is not empty.
 
@@ -523,34 +536,44 @@ def admin_menu(system: RegistrationSystem, admin: Admin):
         print("5. List students in a course")
         print("6. List courses of a student")
         print("7. Logout")
-        choice = input_nonempty("Enter choice: ")
+        choice = valid_input_nonempty("Enter choice: ")
 
         try:
             if choice == '1':
-                course_id = input_nonempty("Course ID: ").upper()
-                title = input_nonempty("Title: ")
-                description = input_nonempty("Description: ")
-                credits = input_int("Credits: ", 1)
-                capacity = input_int("Capacity: ", 1)
+                course_id = valid_input_nonempty("Course ID: ").upper()
+                title = valid_input_nonempty("Title: ")
+                description = valid_input_nonempty("Description: ")
+                credits = valid_input_int("Credits: ", 1)
+                capacity = valid_input_int("Capacity: ", 1)
                 system.add_course(course_id, title, description, credits, capacity)
                 print(f"Course {course_id} added successfully.")
             elif choice == '2':
-                course_id = input_nonempty("Course ID to remove: ").upper()
+                course_id = valid_input_nonempty("Course ID to remove: ").upper()
                 system.remove_course(course_id)
                 print(f"Course {course_id} removed successfully.")
             elif choice == '3':
-                course_id = input_nonempty("Course ID to update: ").upper()
-                print("Leave blank to keep current value.")
-                title = input("New Title: ").strip() or None
-                description = input("New Description: ").strip() or None
-                credits_input = input("New Credits: ").strip()
-                credits = int(credits_input) if credits_input.isdigit() else None
-                capacity_input = input("New Capacity: ").strip()
-                capacity = int(capacity_input) if capacity_input.isdigit() else None
-                system.update_course(course_id, title, description, credits, capacity)
-                print(f"Course {course_id} updated successfully.")
+                course_id = valid_input_nonempty("Course ID to update: ").upper()
+
+                if course_id in system.courses:
+                    print("Leave blank to keep current value.")
+                    title = input("New Title: ").strip() or None
+                    description = input("New Description: ").strip() or None
+
+                    credits_input = input("New Credits: ").strip()
+                    credits = int(credits_input) if credits_input.isdigit() else None
+
+                    capacity_input = input("New Capacity: ").strip()
+                    capacity = int(capacity_input) if capacity_input.isdigit() else None
+
+                    try:
+                        system.update_course(course_id, title, description, credits, capacity)
+                        print(f"Course {course_id} updated successfully.")
+                    except Exception as e:
+                        print(f"Error updating course: {e}")
+                else:
+                    print(f"Course ID {course_id} not found.")
             elif choice == '4':
-                term = input_nonempty("Enter search term (ID or title): ")
+                term = valid_input_nonempty("Enter search term (ID or title): ")
                 results = system.search_courses(term)
                 if not results:
                     print("No courses found.")
@@ -558,7 +581,7 @@ def admin_menu(system: RegistrationSystem, admin: Admin):
                     for c in results:
                         print(c)
             elif choice == '5':
-                course_id = input_nonempty("Course ID: ").upper()
+                course_id = valid_input_nonempty("Course ID: ").upper()
                 students = system.list_students_for_course(course_id)
                 if not students:
                     print("No students registered for this course.")
@@ -567,7 +590,7 @@ def admin_menu(system: RegistrationSystem, admin: Admin):
                     for sid in students:
                         print(f"- {sid}")
             elif choice == '6':
-                student_id = input_nonempty("Student ID: ").lower()
+                student_id = valid_input_nonempty("Student ID: ").lower()
                 courses = system.list_courses_for_student(student_id)
                 if not courses:
                     print("Student is not registered for any courses.")
@@ -610,7 +633,7 @@ def student_menu(system: RegistrationSystem, student: Student):
         print("3. Drop a course")
         print("4. View registered courses")
         print("5. Logout")
-        choice = input_nonempty("Enter choice: ")
+        choice = valid_input_nonempty("Enter choice: ")
 
         try:
             if choice == '1':
@@ -618,19 +641,20 @@ def student_menu(system: RegistrationSystem, student: Student):
                 if not courses:
                     print("No courses available.")
                 else:
+                    print(Course.get_table_header())
                     for c in courses:
                         status = "Full" if c.is_full() else "Available"
                         print(f"{c} - Status: {status}")
             elif choice == '2':
-                course_id = input_nonempty("Enter course ID to register: ").upper()
-                system.register_student_for_course(student.user_id, course_id)
+                course_id = valid_input_nonempty("Enter course ID to register: ").upper()
+                system.student_course_register(student.user_id, course_id)
                 print(f"Registered for course {course_id}.")
             elif choice == '3':
-                course_id = input_nonempty("Enter course ID to drop: ").upper()
-                system.drop_student_from_course(student.user_id, course_id)
+                course_id = valid_input_nonempty("Enter course ID to drop: ").upper()
+                system.student_course_remove(student.user_id, course_id)
                 print(f"Dropped course {course_id}.")
             elif choice == '4':
-                report = system.generate_report_student_courses(student.user_id)
+                report = system.student_registered_course(student.user_id)
                 print("Registered courses:")
                 print(report)
             elif choice == '5':
@@ -641,15 +665,11 @@ def student_menu(system: RegistrationSystem, student: Student):
         except Exception as e:
             print(f"Error: {e}")
 
+
 def main():
     system = RegistrationSystem()
 
     print("Welcome to Student Course Registration System")
-    print("\nPlease use pre-registered accounts to log-in")
-    print("{:<15} {:<15} {:<25}".format("Role", "User ID", "Password"))
-    print("{:<15} {:<15} {:<25}".format("Admin", "admin", "<password>"))
-    print("{:<15} {:<15} {:<25}".format("Students", "student1", "<pass123>"))
-    print("{:<15} {:<15} {:<25}".format("Students", "student2", "<pass123>"))
 
     while True:
         print("\nPlease use pre-registered accounts to log-in")
@@ -658,8 +678,8 @@ def main():
         print("{:<15} {:<15} {:<25}".format("Students", "student1", "<pass123>"))
         print("{:<15} {:<15} {:<25}".format("Students", "student2", "<pass123>"))
         print("\n--- Login ---")
-        user_id = input_nonempty("User ID: ").lower()
-        password = input_nonempty("Password: ")
+        user_id = valid_input_nonempty("User ID: ").lower()
+        password = valid_input_nonempty("Password: ")
 
         try:
             user = system.authenticate_user(user_id, password)
