@@ -1,5 +1,5 @@
 """
-Title:       Critical Thinking Assignment #6
+Title:       Portfolio Project
 Author:      Minh Nguyen
 Created:     2025-07-06
 Description:
@@ -17,24 +17,24 @@ class User:
 
     def __init__(self, user_id: str, password: str):
         """
-        Initializes a User instance with a user ID and password.
+        Creates a new User with a user ID and password.
 
-        Args:
-            user_id (str): The unique identifier for the user.
-            password (str): The user's password for authentication.
+        Arguments:
+            user_id (str): A name or ID to identify the user.
+            password (str): The user's password to log in.
         """
         self.user_id = user_id
         self.password = password
 
     def authenticate(self, password: str) -> bool:
         """
-        Checks if the provided password matches the user's password.
+        Checks if the given password is correct.
 
-        Args:
-            password (str): The password to verify.
+        Argument:
+            password (str): The password you want to check.
 
         Returns:
-            bool: True if the password matches, False otherwise.
+            bool: Returns True if the password is right, False if it's wrong.
         """
         return self.password == password
 
@@ -43,44 +43,44 @@ class Student(User):
 
     def __init__(self, user_id: str, password: str):
         """
-        Initializes a Student instance inheriting from User.
+        Creates a new Student using the User class.
 
-        Args:
-            user_id (str): The unique identifier for the student.
-            password (str): The password for student authentication.
+        Arguments:
+            user_id (str): A name or ID to identify the student.
+            password (str): The student's password to log in.
 
         Attributes:
-            registered_courses (List[str]): List of course IDs the student is currently registered for.
+            registered_courses (List[str]): A list of course names or IDs the student is signed up for.
         """
         super().__init__(user_id, password)
-        self.registered_courses = []  # List of Course IDs
+        self.registered_courses = []
 
     def register_course(self, course_id: str):
         """
-        Adds a course ID to the student's list of registered courses if not already registered.
+        Adds a course to the student's course list if it's not already added.
 
-        Args:
-            course_id (str): The unique identifier of the course to register.
+        Argument:
+            course_id (str): The name or ID of the course to add.
         """
         if course_id not in self.registered_courses:
             self.registered_courses.append(course_id)
 
     def drop_course(self, course_id: str):
         """
-        Removes a course ID from the student's registered courses if present.
+        Removes a course from the student's course list if it's there.
 
-        Args:
-            course_id (str): The unique identifier of the course to drop.
+        Argument:
+            course_id (str): The ID of the course to remove.
         """
         if course_id in self.registered_courses:
             self.registered_courses.remove(course_id)
 
     def view_registered_courses(self) -> List[str]:
         """
-        Returns a list of course IDs the student is currently registered in.
+        Shows all the courses the student is currently registered in.
 
         Returns:
-            List[str]: List of registered course IDs.
+            List[str]: A list of course names or IDs.
         """
         return self.registered_courses
 
@@ -93,17 +93,17 @@ class Course:
 
     def __init__(self, course_id: str, title: str, description: str, credits: int, capacity: int):
         """
-        Initializes a Course instance with the provided details.
+        Creates a new Course with the provided details (Arguments).
 
-        Args:
-            course_id (str): Unique identifier for the course (converted to uppercase).
-            title (str): The course title.
-            description (str): A brief description of the course content.
-            credits (int): Number of credits the course is worth.
-            capacity (int): Maximum number of students allowed to register.
+        Arguments:
+            course_id (str): A short name or code for the course (automatically made uppercase).
+            title (str): The name of the course.
+            description (str): A short summary of what the course is about.
+            credits (int): How many credits the course is worth.
+            capacity (int): The maximum number of students allowed in the course.
 
         Attributes:
-            registered_students (List[str]): List of student IDs currently registered.
+            registered_students (List[str]): A list of student IDs who signed up for the course.
         """
         self.course_id = course_id.upper()
         self.title = title
@@ -114,15 +114,21 @@ class Course:
 
     def update_details(self, title=None, description=None, credits=None, capacity=None):
         """
-        Updates course details with any provided new values.
+        Changes the course details
 
-        Only non-None arguments will update the corresponding attribute.
+        You can update one, some, or all of the following:
+        - title
+        - description
+        - credits
+        - capacity
 
-        Args:
-            title (str, optional): New title for the course.
-            description (str, optional): New course description.
-            credits (int, optional): New credit value.
-            capacity (int, optional): New maximum student capacity.
+        Only the values you provide will be updated.
+
+        Arguments:
+            title (str, optional): New course name.
+            description (str, optional): New summary of the course.
+            credits (int, optional): New number of credits.
+            capacity (int, optional): New student limit.
         """
         if title is not None:
             self.title = title
@@ -135,22 +141,22 @@ class Course:
 
     def is_full(self) -> bool:
         """
-        Checks whether the course has reached its registration capacity.
+        Checks if the course is full (If the course is full, no more students can join).
 
         Returns:
-            bool: True if the number of registered students is greater than or equal to capacity; False otherwise.
+            bool: True if the course reached its limit; False if there is still space.
         """
         return len(self.registered_students) >= self.capacity
 
     def add_student(self, student_id: str):
         """
-        Registers a student in the course if there is space and the student is not already registered.
+        Adds a student to the course if there is room and the student isn't already signed up.
 
-        Args:
+        Argument:
             student_id (str): The ID of the student to add.
 
         Raises:
-            Exception: If the course is full or the student is already registered.
+            Exception: If the course is full or the student is already on the list.
         """
         if not self.is_full() and student_id not in self.registered_students:
             self.registered_students.append(student_id)
@@ -159,9 +165,9 @@ class Course:
 
     def remove_student(self, student_id: str):
         """
-        Removes a student from the registered students list if present.
+        Takes a student out of the course if they are signed up.
 
-        Args:
+        Argument:
             student_id (str): The ID of the student to remove.
         """
         if student_id in self.registered_students:
@@ -169,10 +175,10 @@ class Course:
 
     def __str__(self):
         """
-        Returns a string representation of the course including ID, title, credits, capacity, and number of registered students.
+        Shows course information as a string.
 
         Returns:
-            str: Formatted course information.
+            str: A summary including course ID, title, credits, capacity, and how many students are registered.
         """
         return (f"ID: {self.course_id}, Title: {self.title}, Credits: {self.credits}, "
                 f"Capacity: {self.capacity}, Registered: {len(self.registered_students)}")
@@ -182,9 +188,8 @@ class RegistrationSystem:
 
     def __init__(self):
         """
-        Initializes the RegistrationSystem instance.
+        Starts the registration system with empty lists of courses, students, and admins.
 
-        Sets up empty dictionaries to store courses, students, and admins.
         Also pre-registers default admin and student accounts with preset credentials.
 
         Attributes:
@@ -205,20 +210,17 @@ class RegistrationSystem:
 
     def authenticate_user(self, user_id: str, password: str) -> User:
         """
-        Authenticates a user (admin or student) based on user ID and password.
+        Checks if a user as admin or student can log in with the given ID and password.
 
-        Checks the credentials against the stored admin and student records.
-        Returns the authenticated user object if successful; otherwise, raises an exception.
-
-        Args:
-            user_id (str): The unique identifier of the user.
-            password (str): The password provided for authentication.
+        Arguments:
+            user_id (str): The username to check.
+            password (str): The password to check.
 
         Returns:
-            User: The authenticated user object (Admin or Student).
+            User: The user object if login is successful.
 
         Raises:
-            Exception: If authentication fails due to invalid username or password.
+            Exception: If the username or password is wrong.
         """
         user_id = user_id.lower()
         if user_id == 'admin' and user_id in self.admins:
@@ -237,18 +239,15 @@ class RegistrationSystem:
         """
         Adds a new course to the system.
 
-        Creates a new course with the specified details and adds it to the course list.
-        Raises an exception if a course with the same ID already exists.
-
-        Args:
-            course_id (str): The unique identifier for the new course.
-            title (str): The title of the course.
-            description (str): A brief description of the course.
-            credits (int): The number of credits the course offers.
-            capacity (int): The maximum number of students allowed to register.
+        Arguments:
+            course_id (str): The course code (like "CS101").
+            title (str): The name of the course.
+            description (str): A short explanation of what the course is about.
+            credits (int): How many credits the course gives.
+            capacity (int): The max number of students who can join.
 
         Raises:
-            Exception: If a course with the given ID already exists.
+            Exception: If the course ID already exists.
         """
         course_id = course_id.upper()
         if course_id in self.courses:
@@ -257,16 +256,13 @@ class RegistrationSystem:
 
     def remove_course(self, course_id: str):
         """
-        Removes a course from the system and deregisters all students from it.
+        Removes a course from the system and removes it from all students' lists.
 
-        This method deletes the course from the course list and updates all students
-        who were registered for the course by removing the course from their records.
-
-        Args:
-            course_id (str): The unique identifier of the course to remove.
+        Arguments:
+            course_id (str): The course code to remove.
 
         Raises:
-            Exception: If the course with the given ID is not found.
+            Exception: If the course does not exist.
         """
         course_id = course_id.upper()
         if course_id not in self.courses:
@@ -279,19 +275,19 @@ class RegistrationSystem:
 
     def update_course(self, course_id: str, title=None, description=None, credits=None, capacity=None):
         """
-        Updates the details of an existing course.
+        Changes details of an existing course.
 
-        Only the provided fields will be updated; fields set to None will remain unchanged.
+        Only the information you give will be changed. If you leave something out, it stays the same.
 
-        Args:
-            course_id (str): The unique identifier of the course to update.
-            title (str, optional): The new title of the course. Defaults to None.
-            description (str, optional): The new description of the course. Defaults to None.
-            credits (int, optional): The new number of credits for the course. Defaults to None.
-            capacity (int, optional): The new capacity for the course. Defaults to None.
+        Arguments:
+            course_id (str): The course code to update.
+            title (str, optional): New course name. Default is no change.
+            description (str, optional): New course summary. Default is no change.
+            credits (int, optional): New number of credits. Default is no change.
+            capacity (int, optional): New max students allowed. Default is no change.
 
         Raises:
-            Exception: If the course with the given ID is not found.
+            Exception: If the course does not exist.
         """
         course_id = course_id.upper()
         if course_id not in self.courses:
@@ -300,15 +296,15 @@ class RegistrationSystem:
 
     def search_courses(self, search_term: str) -> List[Course]:
         """
-        Searches for courses where the course ID or title contains the given search term.
+        Finds courses by its ID or title.
 
-        The search is case-insensitive and returns all matching courses.
+        The search ignores uppercase or lowercase letters.
 
-        Args:
-            search_term (str): The term to search for within course IDs and titles.
+        Arguments:
+            search_term (str): The word to look for in course IDs and titles.
 
         Returns:
-            List[Course]: A list of courses matching the search criteria. Returns an empty list if no matches are found.
+            List[Course]: A list of courses that match the search. Empty if none found.
         """
         search_term = search_term.lower()
         results = []
@@ -319,16 +315,16 @@ class RegistrationSystem:
 
     def list_students_for_course(self, course_id: str) -> List[str]:
         """
-        Retrieves a list of student IDs registered for a specific course.
+        Gets the list of students signed up for a given course.
 
-        Args:
-            course_id (str): The unique identifier of the course.
+        Arguments:
+            course_id (str): The course code to check.
 
         Returns:
-            List[str]: A list of student IDs currently registered in the course.
+            List[str]: Student IDs registered in the course.
 
         Raises:
-            Exception: If the course ID is not found in the system.
+            Exception: If the course does not exist.
         """
         course_id = course_id.upper()
         if course_id not in self.courses:
@@ -337,16 +333,16 @@ class RegistrationSystem:
 
     def list_courses_for_student(self, student_id: str) -> List[str]:
         """
-        Retrieves a list of course IDs for courses a student is registered in.
+        Gets the list of courses a student is signed up for.
 
-        Args:
-            student_id (str): The unique identifier of the student.
+        Arguments:
+            student_id (str): The student's ID.
 
         Returns:
-            List[str]: A list of course IDs the student is currently registered for.
+            List[str]: Course IDs the student is registered in.
 
         Raises:
-            Exception: If the student ID is not found in the system.
+            Exception: If the student does not exist.
         """
         student_id = student_id.lower()
         if student_id not in self.students:
@@ -357,19 +353,19 @@ class RegistrationSystem:
 
     def register_student_for_course(self, student_id: str, course_id: str):
         """
-        Registers a student for a specified course.
+        Signs a student up for a course.
 
-        This method checks if both the student and course exist, verifies course capacity,
-        and ensures the student is not already registered before adding the student to the course.
+        Checks if the student and course exist, makes sure the course is not full,
+        and that the student is not already signed up.
 
-        Args:
-            student_id (str): The unique identifier of the student.
-            course_id (str): The unique identifier of the course.
+        Arguments:
+            student_id (str): The student's ID.
+            course_id (str): The course code.
 
         Raises:
-            Exception: If the student or course is not found,
-                       if the course is already full,
-                       or if the student is already registered for the course.
+            Exception: If student or course is not found,
+                       if the course is full,
+                       or if the student is already signed up for the course.
         """
         student_id = student_id.lower()
         course_id = course_id.upper()
@@ -388,17 +384,18 @@ class RegistrationSystem:
 
     def drop_student_from_course(self, student_id: str, course_id: str):
         """
-        Removes a student from a specified course.
+        Removes a student from a course.
 
-        This method updates both the student and course records to reflect the change.
-        It checks that both the student and course exist and that the student is currently registered for the course.
+        Checks that the student and course exist, and that the student is registered.
+        Updates both the course and student records.
 
-        Args:
-            student_id (str): The unique identifier for the student.
-            course_id (str): The unique identifier for the course.
+        Arguments:
+            student_id (str): The student's ID.
+            course_id (str): The course code.
 
         Raises:
-            Exception: If the student or course is not found, or if the student is not registered for the course.
+            Exception: If student or course is not found,
+                       or if the student is not registered for the course.
         """
         student_id = student_id.lower()
         course_id = course_id.upper()
@@ -415,32 +412,28 @@ class RegistrationSystem:
 
     def view_available_courses(self) -> List[Course]:
         """
-        Returns a list of all available courses in the system.
+        Shows all courses in the system.
 
-        This includes all courses regardless of their capacity status
-        (e.g., full or not full). It is up to the caller to filter or display them as needed.
+        This returns every course
 
         Returns:
-            List[Course]: A list of all course objects currently stored in the system.
+            List[Course]: A list of all courses.
         """
         return list(self.courses.values())
 
     def generate_report_student_courses(self, student_id: str) -> str:
         """
-        Generates a report of all courses a student is registered for.
+        Creates a report showing all courses a student is signed up for.
 
-        Looks up the student by ID and compiles a list of their registered courses.
-        Each course in the report includes the course ID, title, and number of credits.
-
-        Args:
-            student_id (str): The unique identifier for the student.
+        Arguments:
+            student_id (str): The student's ID.
 
         Returns:
-            str: A formatted string listing the student's registered courses,
-                 or a message if no courses are registered.
+            str: A list of courses with their ID, title, and credits,
+                 or a message if the student has no courses.
 
         Raises:
-            Exception: If the student ID is not found in the system.
+            Exception: If the student does not exist.
         """
         student_id = student_id.lower()
         if student_id not in self.students:
@@ -458,21 +451,18 @@ class RegistrationSystem:
 
 def input_int(prompt: str, min_val=None, max_val=None) -> int:
     """
-    Prompts the user to enter an integer, optionally enforcing a value range.
+    Ask the user to enter a whole number.
 
-    Continuously prompts the user until a valid integer is entered. If minimum
-    and/or maximum bounds are provided, the input must fall within the specified range.
+    Keeps asking until the user types a valid number.
+    The number must be inside that range if min/max val are set.
 
     Args:
-        prompt (str): The prompt message to display to the user.
-        min_val (int, optional): The minimum acceptable value (inclusive). Defaults to None.
-        max_val (int, optional): The maximum acceptable value (inclusive). Defaults to None.
+        prompt (str): Message shown to the user.
+        min_val (int, optional): Lowest number allowed.
+        max_val (int, optional): Highest number allowed.
 
     Returns:
-        int: The validated integer input from the user.
-
-    Raises:
-        ValueError: Not explicitly raised, but invalid input is handled and re-prompted.
+        int: The number the user typed (valid and inside the range if set).
     """
     while True:
         try:
@@ -486,15 +476,15 @@ def input_int(prompt: str, min_val=None, max_val=None) -> int:
 
 def input_nonempty(prompt: str) -> str:
     """
-    Prompts the user for non-empty input.
+    Asks the user to type something that is not empty.
 
-    Continuously prompts the user until a non-empty, non-whitespace-only string is entered.
+    Keeps asking until the user types at least one non-space character.
 
     Args:
-        prompt (str): The input prompt to display to the user.
+        prompt (str): The message shown to the user.
 
     Returns:
-        str: The user's non-empty input.
+        str: The text the user typed (not empty).
     """
     while True:
         s = input(prompt).strip()
@@ -506,25 +496,22 @@ def input_nonempty(prompt: str) -> str:
 
 def admin_menu(system: RegistrationSystem, admin: Admin):
     """
-    Displays the admin menu interface.
+    Displays the admin menu options.
 
-    Admin menu including function for admin able to:
-        1. Add a new course.
-        2. Remove an existing course.
-        3. Update course details.
-        4. Search for courses by ID or title.
-        5. List students registered in a specific course.
-        6. List all courses registered by a specific student.
-        7. Logout from the system.
-
-    The menu runs in a loop until the admin chooses to log out (Option #7).
+    Admin can:
+    1. Add a new course
+    2. Remove a course
+    3. Update course details
+    4. Search courses by ID or title
+    5. List students registered in a course
+    6. List courses registered by a student
+    7. Logout
 
     Args:
-        system (RegistrationSystem): The system instance handling administrative operations.
-        admin (Admin): The admin object representing the logged-in administrator.
+        system (RegistrationSystem): The registration system instance.
+        admin (Admin): The logged-in admin user.
 
-    Raises:
-        Exceptions from the RegistrationSystem methods are caught and displayed to the user.
+    Runs until admin chooses to logout.
     """
     while True:
         print("\n--- Admin Menu ---")
@@ -598,23 +585,22 @@ def admin_menu(system: RegistrationSystem, admin: Admin):
 
 def student_menu(system: RegistrationSystem, student: Student):
     """
-    Displays the student menu interface.
+    Displays the student menu options.
 
-    Student menu including function for student able to:
-        1. View all available courses.
-        2. Register for a course.
-        3. Drop a course.
-        4. View currently registered courses.
-        5. Logout from the system.
+    Student menu functions:
+        1. View all available courses
+        2. Register for a course
+        3. Drop a course
+        4. View currently registered courses
+        5. Logout
 
-    The menu loops until the student chooses to log out (Option #5).
+    Loops until the student chooses to logout.
 
     Args:
-        system (RegistrationSystem): The system instance handling course registrations.
-        student (Student): The student object representing the logged-in user.
+        system (RegistrationSystem): The course registration system instance.
+        student (Student): The logged-in student.
 
-    Raises:
-        Any exceptions from the RegistrationSystem methods will be caught and displayed.
+    Exceptions from RegistrationSystem methods are caught and shown.
     """
     while True:
         print(f"\n--- Student Menu ({student.user_id}) ---")
